@@ -1096,6 +1096,7 @@ static bit_t decodeFrame (void) {
             //int gwmargin = opts[oidx+1];
             //int ngws = opts[oidx+2];
             oidx += 3;
+            LMIC.lchkReq = 0;       // Request only once
             continue;
         }
         case MCMD_LADR_REQ: {
@@ -1560,6 +1561,10 @@ static void buildDataFrame (void) {
         LMIC.dn2Ans = 0;
     }
 #endif // !DISABLE_MCMD_DN2P_SET
+    if( LMIC.lchkReq ) {  // Ask for a link check request (gateway's margin + gateway number)
+        LMIC.frame[end+0] = MCMD_LCHK_REQ;
+        end += 1;
+    }
     if( LMIC.devsAns ) {  // answer to device status
         LMIC.frame[end+0] = MCMD_DEVS_ANS;
         LMIC.frame[end+1] = os_getBattLevel();
@@ -2140,6 +2145,7 @@ void LMIC_reset (void) {
     LMIC.adrEnabled   =  FCT_ADREN;
     LMIC.dn2Dr        =  DR_DNW2;   // we need this for 2nd DN window of join accept
     LMIC.dn2Freq      =  FREQ_DNW2; // ditto
+    LMIC.lchkReq      = 0;
 #if !defined(DISABLE_PING)
     LMIC.ping.freq    =  FREQ_PING; // defaults for ping
     LMIC.ping.dr      =  DR_PING;   // ditto
@@ -2262,3 +2268,10 @@ void LMIC_setLinkCheckMode (bit_t enabled) {
 }
 
 
+
+// Linkcheckreq
+// Ask for a link check request on next frame UP.
+// It will ask the network for gateway's margin and the number of gateways
+void LMIC_setLinkCheckRequestOnce (bit_t enabled) {
+    LMIC.lchkReq = 1;
+}
