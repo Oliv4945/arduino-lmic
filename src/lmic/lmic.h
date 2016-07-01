@@ -208,6 +208,10 @@ struct lmic_t {
     bit_t       devsAns;      // device status answer pending
     u1_t        adrEnabled;
     u1_t        moreData;     // NWK has more data pending
+    
+    bit_t       lchkReq;      // Send lCheckReq MAC command
+    u1_t        gwMargin;     // Gateway margin    (lcheckAns)
+    u1_t        nGws;         // Number of gateways (lcheckAns)
 #if !defined(DISABLE_MCMD_DCAP_REQ)
     bit_t       dutyCapAns;   // have to ACK duty cycle settings
 #endif
@@ -289,6 +293,7 @@ void  LMIC_tryRejoin     (void);
 
 void LMIC_setSession (u4_t netid, devaddr_t devaddr, xref2u1_t nwkKey, xref2u1_t artKey);
 void LMIC_setLinkCheckMode (bit_t enabled);
+void LMIC_setLinkCheckRequestOnce (bit_t enabled);
 
 // Declare onEvent() function, to make sure any definition will have the
 // C conventions, even when in a C++ file.
