@@ -917,6 +917,7 @@ static void stateJustJoined (void) {
     LMIC.dnConf      = LMIC.adrChanged = LMIC.ladrAns = LMIC.devsAns = 0;
 #if !defined(DISABLE_MCMD_SNCH_REQ)
     LMIC.snchAns     = 0;
+    LMIC.snchAnsNb   = 0;
 #endif
 #if !defined(DISABLE_MCMD_DN2P_SET)
     LMIC.dn2Ans      = 0;
@@ -1068,6 +1069,7 @@ static void parseMacCommands (xref2u1_t opts, int olen) {
             u4_t freq  = convFreq(&opts[oidx+2]); // freq
             u1_t drs   = opts[oidx+5];  // datarate span
             LMIC.snchAns = 0x80;
+            LMIC.snchAnsNb = LMIC.snchAnsNb + 1;
             if( freq != 0 && LMIC_setupChannel(chidx, freq, DR_RANGE_MAP(drs&0xF,drs>>4), -1) )
                 LMIC.snchAns |= MCMD_SNCH_ANS_DRACK|MCMD_SNCH_ANS_FQACK;
 #endif // !DISABLE_MCMD_SNCH_REQ
@@ -1610,12 +1612,13 @@ static void buildDataFrame (void) {
     }
 #endif // !DISABLE_MCMD_PING_SET && !DISABLE_PING
 #if !defined(DISABLE_MCMD_SNCH_REQ)
-    if( LMIC.snchAns ) {
+    for( int i=0; i<LMIC.snchAnsNb; i++ ) {
         LMIC.frame[end+0] = MCMD_SNCH_ANS;
         LMIC.frame[end+1] = LMIC.snchAns & ~MCMD_SNCH_ANS_RFU;
         end += 2;
-        LMIC.snchAns = 0;
     }
+    LMIC.snchAns = 0;
+    LMIC.snchAnsNb = 0;
 #endif // !DISABLE_MCMD_SNCH_REQ
     ASSERT(end <= OFF_DAT_OPTS+16);
 

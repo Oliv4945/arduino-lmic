@@ -155,6 +155,7 @@ struct lmic_t {
     u1_t        rxsyms;
     u1_t        dndr;
     s1_t        txpow;     // dBm
+    uint8_t     snchAnsNb;      // answer to set new channel
 
     osjob_t     osjob;
 
