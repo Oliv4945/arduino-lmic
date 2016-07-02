@@ -1222,9 +1222,10 @@ static bit_t decodeFrame (void) {
         // DN frame requested confirmation - provide ACK once with next UP frame
         LMIC.dnConf = (ftype == HDR_FTYPE_DCDN ? FCT_ACK : 0);
     }
-
-    if( LMIC.dnConf || (fct & FCT_MORE) )
-        LMIC.opmode |= OP_POLL;
+    
+    // Commented for know. Automatically answer without Fcnt incrementation
+    // if( LMIC.dnConf || (fct & FCT_MORE) )
+        // LMIC.opmode |= OP_POLL;
 
     // We heard from network
     LMIC.adrChanged = LMIC.rejoinCnt = 0;
