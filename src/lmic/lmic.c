@@ -2163,11 +2163,11 @@ void LMIC_reset (void) {
     LMIC.lchkReq      = 0;
     LMIC.gwMargin     = 0;
     LMIC.nGws         = 0;
+    LMIC.rxDelay      =  DELAY_DNW1;
 #if !defined(DISABLE_PING)
     LMIC.ping.freq    =  FREQ_PING; // defaults for ping
     LMIC.ping.dr      =  DR_PING;   // ditto
     LMIC.ping.intvExp =  0xFF;
-    LMIC.rxDelay      =  DELAY_DNW1;
 #endif // !DISABLE_PING
 #if defined(CFG_us915)
     initDefaultChannels();
