@@ -467,6 +467,7 @@ static void txfsk () {
 }
 
 static void txlora () {
+    printf("TX\n");
     // select LoRa modem (from sleep mode)
     //writeReg(RegOpMode, OPMODE_LORA);
     opmodeLora();
@@ -738,6 +739,7 @@ void radio_irq_handler (u1_t dio) {
         if( flags & IRQ_LORA_TXDONE_MASK ) {
             // save exact tx time
             LMIC.txend = now - us2osticks(43); // TXDONE FIXUP
+            printf("txend\n");
         } else if( flags & IRQ_LORA_RXDONE_MASK ) {
             // save exact rx time
             if(getBw(LMIC.rps) == BW125) {
@@ -754,9 +756,11 @@ void radio_irq_handler (u1_t dio) {
             // read rx quality parameters
             LMIC.snr  = readReg(LORARegPktSnrValue); // SNR [dB] * 4
             LMIC.rssi = readReg(LORARegPktRssiValue) - 125 + 64; // RSSI [dBm] (-196...+63)
+            printf("rxOK\n");
         } else if( flags & IRQ_LORA_RXTOUT_MASK ) {
             // indicate timeout
             LMIC.dataLen = 0;
+            printf("rxTimeout\n");
         }
         // mask all radio IRQs
         writeReg(LORARegIrqFlagsMask, 0xFF);
