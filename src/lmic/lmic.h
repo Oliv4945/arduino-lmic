@@ -225,7 +225,8 @@ struct lmic_t {
     bit_t       dutyCapAns;   // have to ACK duty cycle settings
 #endif
 #if !defined(DISABLE_MCMD_SNCH_REQ)
-    u1_t        snchAns;      // answer set new channel
+    u1_t        snchAns[MAX_CHANNELS];  // answer set new channel
+    u1_t        snchAnsNb;    // Numbers of channels to answer
 #endif
     // 2nd RX window (after up stream)
     u1_t        dn2Dr;
